@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="NewExam.KrossovkiCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:NewExam"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Name="BACK">
+        <Border CornerRadius="15" BorderThickness="3" BorderBrush="Black"/>
+        <Image Name="IMG" Width="100" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10"/>
+        <StackPanel Margin="110,0,100,0">
+            <Label Name="Name"/>
+            <TextBlock Margin="5,2,5,2" Name="OldPrice"/>
+            <Label Name="Price"/>
+            <Label Name="Kolvo"/>
+            <Label Name="Postavshik"/>
+            <Label Name="Proizvoditel"/>
+        </StackPanel>
+        <Label Name="Skidka" Width="100" HorizontalAlignment="Right" VerticalAlignment="Center" HorizontalContentAlignment="Center"/>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="10">
+            <Button Visibility="Collapsed" Click="EditTovarClick" Name="EditTovarBTN" Content="Изменить" Background="Red" Foreground="White" />
+            <Button Visibility="Collapsed" Click="DeleteTovarClick" Name="DeleteTovarBTN" Content="Удалить" Background="AliceBlue" Foreground="Black"/>
+        </StackPanel>
+
+    </Grid>
+</UserControl>
