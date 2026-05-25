@@ -1,39 +1,50 @@
 ﻿using MySql.Data.MySqlClient;
+using Org.BouncyCastle.Asn1.IsisMtt;
 using System.Data;
+using System.Net.Http.Headers;
 
 namespace NewExam
 {
     public class DataHelper
     {
         string conn = "Server=localhost;DataBase=Krossovki;Uid=root;Pwd=;";
+
         public DataTable GetKrossovki()
         {
             DataTable dt = new DataTable();
             string sql = "SELECT T.Id, T.Name, T.Price, T.Skidka, T.Kolvo, T.Foto, K.Kategory, PO.Postavshik " +
                 "FROM Tovar T " +
-                "LEFT JOIN Kategory K ON T.Kategory = K.Id " +
                 "LEFT JOIN Postavshik PO ON T.Postavshik = PO.Id " +
+                "LEFT JOIN Kategory K ON T.Kategory = K.Id " +
                 "ORDER BY T.Id";
-            using (MySqlDataAdapter a = new MySqlDataAdapter(sql, conn)) 
+            using (MySqlDataAdapter a = new MySqlDataAdapter(sql, conn))
                 a.Fill(dt);
             return dt;
+        }
+        public DataTable OrdersWindow()
+        {
+            DataTable dt = new DataTable();
+            string sql = "SELECT * FROM Zakaz";
+            using (MySqlDataAdapter a = new MySqlDataAdapter(sql, conn))
+                a.Fill(dt);
+            return dt;
+
         }
         public DataTable SearchKrossovki(string searchTXT, string PostavshikCMB)
         {
             DataTable dt = new DataTable();
             string sql = "SELECT T.Id, T.Name, T.Price, T.Skidka, T.Kolvo, T.Foto, K.Kategory, PO.Postavshik " +
                 "FROM Tovar T " +
-                "LEFT JOIN Kategory K ON T.Kategory = K.Id " +
                 "LEFT JOIN Postavshik PO ON T.Postavshik = PO.Id " +
-                "WHERE (T.Name LIKE @search OR K.Kategory LIKE @search OR PO.Postavshik LIKE @search) ";
-            if (PostavshikCMB != "Все поставщики")
-                sql += " AND PO.Postavshik = @postavshik ";
+                "LEFT JOIN Kategory K ON T.Kategory = K.Id " +
+                $" WHERE (T.Name LIKE '%{searchTXT}%' OR K.Kategory LIKE '%{searchTXT}%' OR PO.Postavshik LIKE '%{searchTXT}%') ";
+                
+            if(PostavshikCMB != "Все поставщики")
+                sql += $" AND PO.Postavshik = '{PostavshikCMB}' ";
+            sql += " ORDER BY T.Id ";
 
             using (MySqlDataAdapter a = new MySqlDataAdapter(sql, conn))
             {
-                a.SelectCommand.Parameters.AddWithValue("@search", "%" + searchTXT + "%");
-                if (PostavshikCMB != "Все поставщики")
-                    a.SelectCommand.Parameters.AddWithValue("@postavshik", PostavshikCMB);
                 a.Fill(dt);
             }
             return dt;
@@ -46,56 +57,21 @@ namespace NewExam
                 a.Fill(dt);
             return dt;
         }
-        //public int DeleteKrossovki(int productId)
-        //{
-        //    // Проверяем, есть ли товар в заказах
-        //    string sql = "SELECT COUNT(*) FROM Sostav WHERE Tovar_Id = @id";
-        //    using (MySqlConnection c = new MySqlConnection(conn))
-        //    {
-        //        using (MySqlCommand cmd = new MySqlCommand(sql, c))
-        //        {
-        //            cmd.Parameters.AddWithValue("@id", productId);
-        //            int count = (int)cmd.ExecuteScalar();
-
-        //            if (count > 0)
-        //            {
-        //                return -1;  // товар в заказах, нельзя удалить
-        //            }
-        //        }
-        //        c.Open();
-
-
-
-        //        string deleteSql = "DELETE FROM Tovar WHERE Id = @id";
-        //        using (MySqlCommand cmd = new MySqlCommand(deleteSql, c))
-        //        {
-        //            cmd.Parameters.AddWithValue("@id", productId);
-        //            return cmd.ExecuteNonQuery();
-        //        }
-        //    }
-        //}
-        public int DeleteKrossovki(int productId)
+        public int DeleteProduct(int prodId)
         {
-            string sql = "SELECT COUNT(*) FROM Sostav WHERE Tovar_Id = @id";
-            using(MySqlConnection c = new MySqlConnection(conn))
+            string sql = $"SELECT COUNT(*) FROM Sostav WHERE Tovar_Id = {prodId}";
+            using (MySqlConnection c = new MySqlConnection(conn))
             {
                 c.Open();
-
                 using (MySqlCommand cmd = new MySqlCommand(sql, c))
                 {
-                    cmd.Parameters.AddWithValue("@id", productId);
-
                     long count = (long)cmd.ExecuteScalar();
-                    if (count > 0)
+                    if(count > 0)
                         return -1;
                 }
-
-                string deletesql = "DELETE FROM Tovar WHERE Id = @id";
+                string deletesql = $"DELETE FROM Tovar WHERE Id = {prodId}";
                 using (MySqlCommand cmd = new MySqlCommand(deletesql, c))
-                {
-                    cmd.Parameters.AddWithValue("@id", productId);
                     return cmd.ExecuteNonQuery();
-                }
             }
         }
     }

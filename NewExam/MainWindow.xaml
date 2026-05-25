@@ -13,12 +13,12 @@
         <StackPanel Name="FilterPanel" VerticalAlignment="Top" Margin="0,100" Height="70">
             <TextBox Name="SearchTB" TextChanged="SearchTB_TextChanged"/>
             <StackPanel Orientation="Horizontal" >
-                <ComboBox Name="PostavshikCombo" SelectionChanged="PostavshikCombo_SelectionChanged" HorizontalAlignment="Left" Width="100"/>
+                <ComboBox Name="PostavshikCombo" SelectionChanged="PostavshikCombo_SelectionChanged" Width="150"/>
                 <Button Click="ASC" Name="ASCBTN" Content="Вверх" Margin="10,0"/>
                 <Button Click="DESC" Name="DESCBTN" Content="Вниз" />
             </StackPanel>
         </StackPanel>
-        
+
         <Image Source="/Images/Icon.JPG" Height="100" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <Label Content="Кроссовки" FontSize="30" HorizontalAlignment="Center" VerticalAlignment="Top"/>
         <Label Content="User" Name="UserName"  HorizontalAlignment="Right" VerticalAlignment="Top"/>
