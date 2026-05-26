@@ -21,15 +21,6 @@ namespace NewExam
                 a.Fill(dt);
             return dt;
         }
-        public DataTable OrdersWindow()
-        {
-            DataTable dt = new DataTable();
-            string sql = "SELECT * FROM Zakaz";
-            using (MySqlDataAdapter a = new MySqlDataAdapter(sql, conn))
-                a.Fill(dt);
-            return dt;
-
-        }
         public DataTable SearchKrossovki(string searchTXT, string PostavshikCMB)
         {
             DataTable dt = new DataTable();
@@ -77,8 +68,7 @@ namespace NewExam
         public DataTable GetZakaz()
         {
             DataTable dt = new DataTable();
-            string sql = "SELECT Z.Id, Z.DateZakaza, Z.DateDostavki, Z.Status, " +
-                         "CONCAT(P.City, ' ', P.Street, ' ', P.Home) AS PVZ " +
+            string sql = "SELECT Z.Id, Z.DateZakaza, Z.DateDostavki, Z.Status, P.City, P.Street, P.Home " +
                          "FROM Zakaz Z " +
                          "LEFT JOIN PVZ P ON Z.PVZ = P.Id";
             using (MySqlDataAdapter a = new MySqlDataAdapter(sql, conn))

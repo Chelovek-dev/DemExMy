@@ -28,7 +28,7 @@ namespace NewExam
         {
             Articul.Content = $"Артикул: {prod.Id}";
             Status.Content = $"Статус: {prod.Status}";
-            Adres.Content = $"Адрес: {prod.PVZ}";
+            Adres.Content = $"Адрес: {prod.City}, {prod.Street}, {prod.Home} ";
             DateZakaza.Content = $"Дата заказа: {prod.DateZakaza}";
             DateDostavki.Content = prod.DateDostavki;
         }

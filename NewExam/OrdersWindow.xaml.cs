@@ -40,9 +40,12 @@ namespace NewExam
                 {
                     Id = dr["Id"],
                     Status = dr["Status"],
-                    PVZ = dr["PVZ"],
                     DateZakaza = dr["DateZakaza"],
-                    DateDostavki = dr["DateDostavki"]
+                    DateDostavki = dr["DateDostavki"],
+                    Home = dr["Home"],
+                    Street = dr["Street"],
+                    City = dr["City"]
+
                 });
                 OrdersPanel.Children.Add(card);
             }
