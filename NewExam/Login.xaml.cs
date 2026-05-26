@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using System.Security.AccessControl;
 using System.Windows;
 
 namespace NewExam
@@ -24,30 +25,25 @@ namespace NewExam
         private void LoginBTN(object sender, RoutedEventArgs e)
         {
             string conn = "Server=localhost;DataBase=Krossovki;Uid=root;Pwd=;";
-            string sql = "SELECT U.FIO, R.Role FROM " +
-                "Users U " +
+            string sql = "SELECT U.FIO, R.Role " +
+                "FROM Users U " +
                 "LEFT JOIN Role R ON U.Role = R.Id " +
                 $"WHERE Login = '{LoginTXT.Text}' AND Password = '{PasswordTXT.Text}'";
-
             using (MySqlConnection c = new MySqlConnection(conn))
             {
                 c.Open();
                 using (MySqlCommand cmd = new MySqlCommand(sql, c))
                 {
                     var reader = cmd.ExecuteReader();
-                    if (reader.Read())
+                    if(reader.Read())
                     {
                         string FIO = reader["FIO"].ToString();
                         string Role = reader["Role"].ToString();
-                        new MainWindow(FIO,Role).Show();
+                        new MainWindow(FIO, Role).Show();
                         this.Close();
                     }
-                    else { MessageBox.Show("Неправильно логин или пароль"); }
                 }
-                
             }
-
-
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,12 +20,32 @@ namespace NewExam
     /// </summary>
     public partial class OrdersWindow : Window
     {
+        DataHelper db = new DataHelper();
+
         public OrdersWindow()
         {
             InitializeComponent();
-            DataHelper db = new DataHelper();
-            dgOrders.ItemsSource = db.OrdersWindow().DefaultView;
+            LoadOrders();
+        }
 
+        private void LoadOrders()
+        {
+            OrdersPanel.Children.Clear();
+            DataTable dt = db.GetZakaz();
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                var card = new OrderCard();
+                card.SetData(new
+                {
+                    Id = dr["Id"],
+                    Status = dr["Status"],
+                    PVZ = dr["PVZ"],
+                    DateZakaza = dr["DateZakaza"],
+                    DateDostavki = dr["DateDostavki"]
+                });
+                OrdersPanel.Children.Add(card);
+            }
         }
 
         private void BackClick(object sender, RoutedEventArgs e)

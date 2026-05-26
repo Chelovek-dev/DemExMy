@@ -8,9 +8,9 @@
         Title="MainWindow" Height="450" Width="800">
 
     <Grid>
-        <Button Click="AddTovarClick" Name="AddTovarBTN" Content="Добавить товар" Margin="110,50" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <Button Click="ZakazClick" Name="ZakazBTN" Content="Заказы" Margin="110,80" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <StackPanel Name="FilterPanel" VerticalAlignment="Top" Margin="0,100" Height="70">
+        <Button Visibility="Collapsed" Click="AddTovarClick" Name="AddTovarBTN" Content="Добавить товар" Margin="110,50" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Button Visibility="Collapsed" Click="ZakazClick" Name="ZakazBTN" Content="Заказы" Margin="110,80" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <StackPanel Visibility="Collapsed" Name="FilterPanel" VerticalAlignment="Top" Margin="0,100" Height="70">
             <TextBox Name="SearchTB" TextChanged="SearchTB_TextChanged"/>
             <StackPanel Orientation="Horizontal" >
                 <ComboBox Name="PostavshikCombo" SelectionChanged="PostavshikCombo_SelectionChanged" Width="150"/>

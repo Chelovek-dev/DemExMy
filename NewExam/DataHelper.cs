@@ -38,8 +38,8 @@ namespace NewExam
                 "LEFT JOIN Postavshik PO ON T.Postavshik = PO.Id " +
                 "LEFT JOIN Kategory K ON T.Kategory = K.Id " +
                 $" WHERE (T.Name LIKE '%{searchTXT}%' OR K.Kategory LIKE '%{searchTXT}%' OR PO.Postavshik LIKE '%{searchTXT}%') ";
-                
-            if(PostavshikCMB != "Все поставщики")
+
+            if (PostavshikCMB != "Все поставщики")
                 sql += $" AND PO.Postavshik = '{PostavshikCMB}' ";
             sql += " ORDER BY T.Id ";
 
@@ -66,13 +66,24 @@ namespace NewExam
                 using (MySqlCommand cmd = new MySqlCommand(sql, c))
                 {
                     long count = (long)cmd.ExecuteScalar();
-                    if(count > 0)
+                    if (count > 0)
                         return -1;
                 }
                 string deletesql = $"DELETE FROM Tovar WHERE Id = {prodId}";
                 using (MySqlCommand cmd = new MySqlCommand(deletesql, c))
                     return cmd.ExecuteNonQuery();
             }
+        }
+        public DataTable GetZakaz()
+        {
+            DataTable dt = new DataTable();
+            string sql = "SELECT Z.Id, Z.DateZakaza, Z.DateDostavki, Z.Status, " +
+                         "CONCAT(P.City, ' ', P.Street, ' ', P.Home) AS PVZ " +
+                         "FROM Zakaz Z " +
+                         "LEFT JOIN PVZ P ON Z.PVZ = P.Id";
+            using (MySqlDataAdapter a = new MySqlDataAdapter(sql, conn))
+                a.Fill(dt);
+            return dt;
         }
     }
 }

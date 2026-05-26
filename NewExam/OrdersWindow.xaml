@@ -7,8 +7,10 @@
         mc:Ignorable="d"
         Title="Заказы" Height="450" Width="800">
     <Grid>
-        <Label Content="Заказы" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="30"/>    
-        <DataGrid Name="dgOrders" Margin="0,70"/>
+        <Label Content="Заказы" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="30"/>
+        <ScrollViewer Margin="0,55,0,45">
+            <StackPanel Name="OrdersPanel"/>
+        </ScrollViewer>
         <Button Content="Назад" Click="BackClick" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="20" Width="50"/>
     </Grid>
 </Window>
