@@ -1,0 +1,23 @@
+﻿<Window x:Class="NewExam.AddTovarWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NewExam"
+        mc:Ignorable="d"
+        Title="AddTovarWindow" Height="450" Width="800">
+    <Grid>
+        <StackPanel Margin="10">
+            <TextBox Name="txtName" Margin="5" ToolTip="Название товара"/>
+            <TextBox Name="txtPrice" Margin="5" ToolTip="Цена"/>
+            <TextBox Name="txtSkidka" Margin="5" ToolTip="Скидка %"/>
+            <TextBox Name="txtKolvo" Margin="5" ToolTip="Количество"/>
+            <TextBox Name="txtFoto" Margin="5" ToolTip="Имя файла (например, 1.jpg)"/>
+            <ComboBox Name="cmbPostavshik" Margin="5" DisplayMemberPath="Postavshik" SelectedValuePath="Id"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                <Button Content="Сохранить" Click="Save_Click" Width="80" Margin="5" Background="LightGreen"/>
+                <Button Content="Отмена" Click="Cancel_Click" Width="80" Margin="5"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

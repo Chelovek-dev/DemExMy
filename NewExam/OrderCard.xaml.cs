@@ -1,6 +1,10 @@
-﻿using System;
+﻿using Mysqlx.Crud;
+using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Dynamic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,13 +28,27 @@ namespace NewExam
         {
             InitializeComponent();
         }
+        int OrdId;
         public void SetData(dynamic prod)
         {
-            Articul.Content = $"Артикул: {prod.Id}";
-            Status.Content = $"Статус: {prod.Status}";
-            Adres.Content = $"Адрес: {prod.City}, {prod.Street}, {prod.Home} ";
-            DateZakaza.Content = $"Дата заказа: {prod.DateZakaza}";
-            DateDostavki.Content = prod.DateDostavki;
+            OrdId = prod.Id;
+            Articul.Content = "Артикул: " + prod.Id;
+            DateDostavki.Content = "Дата доставки: " + prod.DateDostavki;
+            DateZakaza.Content = "Дата заказа: " + prod.DateZakaza;
+            Status.Content = "Статус: " + prod.Status;
+            Adres.Content = $"{prod.City}, {prod.Street}, {prod.Home}";
+
+        }
+
+        private void DeleteCLICK(object sender, RoutedEventArgs e)
+        {
+            if(MessageBox.Show("Уверены, что хотите удалить заказ?","Нужно подтверждение", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes) 
+                ((OrdersWindow)Window.GetWindow(this)).DeleteOrder(OrdId);
+        }
+
+        private void EditCLICK(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }

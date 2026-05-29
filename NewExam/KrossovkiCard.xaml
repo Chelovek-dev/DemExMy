@@ -11,11 +11,13 @@
         <Image Name="IMG" Width="100" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10"/>
         <StackPanel Margin="110,0,100,0">
             <Label Name="Name"/>
-            <TextBlock Margin="5,2,5,2" Name="OldPrice"/>
-            <Label Name="Price"/>
-            <Label Name="Kolvo"/>
-            <Label Name="Postavshik"/>
+            <Label Name="Opisanie"/>
             <Label Name="Proizvoditel"/>
+            <Label Name="Postavshik"/>
+            <Label Name="Price"/>
+            <TextBlock Margin="5,2,5,2" Name="OldPrice"/>
+            <Label Name="EdIzmer"/>
+            <Label Name="Kolvo"/>
         </StackPanel>
         <Label Name="Skidka" Width="100" HorizontalAlignment="Right" VerticalAlignment="Center" HorizontalContentAlignment="Center"/>
         <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="10">

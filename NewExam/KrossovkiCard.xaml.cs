@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
@@ -21,39 +22,41 @@ namespace NewExam
         int prodId;
         public void SetData(dynamic prod, string role)
         {
-            if (role == "admin")
+            prodId = prod.Id;
+            Name.Content = $"{prod.Name} || {prod.Kategory}";
+            Opisanie.Content = $"Описание {prod.Opisanie}";
+            Proizvoditel.Content = "Производитель: "+prod.Proizvoditel;
+            Postavshik.Content = "Поставщик: " + prod.Postavshik;
+            EdIzmer.Content = "Единица измерения: " + prod.EdIzmer;
+            Kolvo.Content = "Количество: " + prod.Kolvo;
+            Skidka.Content = prod.Skidka + "%";
+            IMG.Source = new BitmapImage(new Uri("Images/" + prod.Foto, UriKind.Relative));
+            if (prod.Foto == "")
+                IMG.Source = new BitmapImage(new Uri("Images/picture.png", UriKind.Relative));
+            decimal d = prod.Skidka;
+            decimal p = prod.Price;
+            decimal final = p * (1 - d / 100);
+            if (d > 0)
+            {
+                OldPrice.Visibility = Visibility.Visible;
+                OldPrice.TextDecorations = TextDecorations.Strikethrough;
+                OldPrice.Text = "Старая цена: " + p.ToString();
+                Price.Content = "Цена: " + final;
+            }
+            else
+            {
+                OldPrice.Visibility = Visibility.Collapsed;
+                Price.Content = "Цена: " + p;
+            }
+            if (d > 15)
+                BACK.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF0099"));
+            if(prod.Kolvo == 0)
+                BACK.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#339999"));
+            if(role == "Администратор")
             {
                 DeleteTovarBTN.Visibility = Visibility.Visible;
                 EditTovarBTN.Visibility = Visibility.Visible;
             }
-            prodId = prod.Id;
-            Name.Content = prod.Name + prod.Kategory;
-            Skidka.Content = prod.Skidka;
-            Kolvo.Content = prod.Kolvo;
-            Postavshik.Content = prod.Postavshik;
-            IMG.Source = new BitmapImage(new Uri("Images/" + prod.Foto, UriKind.Relative));
-            if(prod.Foto == "")
-                IMG.Source = new BitmapImage(new Uri("Images/picture.png", UriKind.Relative));
-
-            decimal p = prod.Price;
-            decimal d = prod.Skidka;
-            decimal final = p * (1 - d / 100);
-            if (d > 0)
-            {
-                Price.Content = final;
-                OldPrice.Text = p.ToString();
-                OldPrice.TextDecorations = TextDecorations.Strikethrough;
-            }
-            if (d > 15)
-            {
-                BACK.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9900FF"));
-            }
-            if (prod.Kolvo == 0)
-            {
-                Kolvo.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3377FF"));
-            }
-            
-
         }
         private void EditTovarClick(object sender, RoutedEventArgs e)
         {
@@ -63,7 +66,7 @@ namespace NewExam
 
         private void DeleteTovarClick(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show("Точно удалить товар?", "Подтверждение", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            if(MessageBox.Show("Уверены, что удалить?","Подвердите", MessageBoxButton.YesNo, MessageBoxImage.Question)==MessageBoxResult.Yes) 
                 ((MainWindow)Window.GetWindow(this)).DeleteProduct(prodId);
         }
     }

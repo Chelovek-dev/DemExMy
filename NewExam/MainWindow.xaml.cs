@@ -1,4 +1,6 @@
-﻿using System.Data;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Data;
+using System.Transactions;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -16,56 +18,55 @@ namespace NewExam
         public MainWindow(string FIO, string Role)
         {
             InitializeComponent();
-            currentData = db.GetKrossovki();
             currentRole = Role;
+            UserName.Content = FIO;
+            currentData = db.GetKrossovki();
             DisplayData(currentData);
-            UserName.Content = currentRole;
-            DataTable dt = db.GetPostavshik();
-            PostavshikCombo.Items.Clear();
-            PostavshikCombo.Items.Add("Все поставщики");
-            foreach (DataRow dr in dt.Rows)
-            {
-                PostavshikCombo.Items.Add(dr["Postavshik"]);
-            }
-            PostavshikCombo.SelectedIndex = 0;
-            if(currentRole == "admin")
+            if(currentRole == "Администратор")
             {
                 AddTovarBTN.Visibility = Visibility.Visible;
-                FilterPanel.Visibility = Visibility.Visible;
                 ZakazBTN.Visibility = Visibility.Visible;
+                FilterPanel.Visibility = Visibility.Visible;
             }
-            else if (currentRole == "manager")
+            else if (currentRole == "Менеджер")
             {
                 AddTovarBTN.Visibility = Visibility.Collapsed;
-                FilterPanel.Visibility = Visibility.Visible;
                 ZakazBTN.Visibility = Visibility.Visible;
+                FilterPanel.Visibility = Visibility.Visible;
             }
-            else 
+            else
             {
                 AddTovarBTN.Visibility = Visibility.Collapsed;
-                FilterPanel.Visibility = Visibility.Collapsed;
                 ZakazBTN.Visibility = Visibility.Collapsed;
+                FilterPanel.Visibility = Visibility.Collapsed;
             }
-
+            PostavshikCombo.Items.Clear();
+            PostavshikCombo.Items.Add("Все поставщики");
+            PostavshikCombo.SelectedIndex = 0;
+            DataTable dt = db.GetPostavshik();
+            foreach (DataRow dr in dt.Rows)
+                PostavshikCombo.Items.Add(dr["Postavshik"]);
         }
 
         private void DisplayData(DataTable dt)
         {
             KrossovkiPanel.Children.Clear();
-            
             foreach (DataRow dr in dt.Rows)
-            { 
+            {
                 var card = new KrossovkiCard();
                 card.SetData(new
                 {
                     Id = dr["Id"],
-                    Name = dr["Name"],
-                    Price = dr["Price"],
-                    Skidka = dr["Skidka"],
-                    Kolvo = dr["Kolvo"],
-                    Foto = dr["Foto"],
                     Kategory = dr["Kategory"],
-                    Postavshik = dr["Postavshik"]
+                    Name = dr["Name"],
+                    Opisanie = dr["Opisanie"],
+                    Proizvoditel = dr["Proizvoditel"],
+                    Postavshik = dr["Postavshik"],
+                    Price = dr["Price"],
+                    EdIzmer = dr["EdIzmer"],
+                    Kolvo = dr["Kolvo"],
+                    Skidka = dr["Skidka"],
+                    Foto = dr["Foto"]
                 }, currentRole);
                 KrossovkiPanel.Children.Add(card);
             }
@@ -73,7 +74,7 @@ namespace NewExam
 
         private void AddTovarClick(object sender, RoutedEventArgs e)
         {
-
+            new AddTovarWindow().ShowDialog();
         }
 
         private void ZakazClick(object sender, RoutedEventArgs e)
@@ -83,32 +84,45 @@ namespace NewExam
 
         private void SearchTB_TextChanged(object sender, TextChangedEventArgs e)
         {
-            DataTable filtred = db.SearchKrossovki(SearchTB.Text, PostavshikCombo.SelectedItem.ToString());
-            currentData = filtred;
-            if (currentSort != "")
+            try
             {
-                DataView dv = currentData.DefaultView;
-                dv.Sort = currentSort;
-                DisplayData(dv.ToTable());
+                DataTable filtred = db.SearchKrossovki(SearchTB.Text, PostavshikCombo.SelectedItem.ToString());
+                currentData = filtred;
+                if (currentSort != "")
+                {
+                    DataView dv = currentData.DefaultView;
+                    dv.Sort = currentSort;
+                    DisplayData(dv.ToTable());
+                }
+                else
+                    DisplayData(currentData);
             }
-            else
-                DisplayData(filtred);
+            catch
+            {
+                MessageBox.Show("Ошибка подключения к БД!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void PostavshikCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            DataTable filtred = db.SearchKrossovki(SearchTB.Text, PostavshikCombo.SelectedItem.ToString());
-            currentData= filtred;
-            if (currentSort != "")
+            try
             {
-                DataView dv = currentData.DefaultView;
-                dv.Sort = currentSort;
-                DisplayData(dv.ToTable());
+                DataTable filtred = db.SearchKrossovki(SearchTB.Text, PostavshikCombo.SelectedItem.ToString());
+                currentData = filtred;
+                if (currentSort != "")
+                {
+                    DataView dv = currentData.DefaultView;
+                    dv.Sort = currentSort;
+                    DisplayData(dv.ToTable());
+                }
+                else
+                    DisplayData(currentData);
             }
-            else
-                DisplayData(filtred);
+            catch
+            {
+                MessageBox.Show("Ошибка подключения к БД!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
-
         private void ASC(object sender, RoutedEventArgs e)
         {
             DataView dv = currentData.DefaultView;
@@ -131,27 +145,33 @@ namespace NewExam
             this.Close();
         }
 
-        public void DeleteProduct(int prodId)
+        internal void DeleteProduct(int prodId)
         {
-            int result = db.DeleteProduct(prodId);
-            if (result == -1)
-                MessageBox.Show("Нельзя");
-            else if (result > 0)
+            try
             {
-                currentData = db.GetKrossovki();
-                if (currentSort != "")
+                var result = db.DeleteProduct(prodId);
+                if (result == -1)
                 {
-                    DataView dv = currentData.DefaultView;
-                    dv.Sort = currentSort;
-                    DisplayData(dv.ToTable());
+                    MessageBox.Show("Нельзя удалить, потому что есть в заказах", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-                else
-                    DisplayData(currentData);
-                MessageBox.Show("Удачно");
+                if (result > 0)
+                {
+                    MessageBox.Show("Удачное удаление", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                    currentData = db.GetKrossovki();
+                    if (currentSort != "")
+                    {
+                        DataView dv = currentData.DefaultView;
+                        dv.Sort = currentSort;
+                        DisplayData(dv.ToTable());
+                    }
+                    else
+                        DisplayData(currentData);
+                }
             }
-            else
-                MessageBox.Show("Ошибка");
-
+            catch
+            {
+                MessageBox.Show("Ошибка подключения к БД", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

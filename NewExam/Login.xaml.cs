@@ -1,6 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
-using System.Security.AccessControl;
 using System.Windows;
+using UIAutomationClientsideProviders;
 
 namespace NewExam
 {
@@ -24,25 +24,36 @@ namespace NewExam
 
         private void LoginBTN(object sender, RoutedEventArgs e)
         {
-            string conn = "Server=localhost;DataBase=Krossovki;Uid=root;Pwd=;";
-            string sql = "SELECT U.FIO, R.Role " +
-                "FROM Users U " +
-                "LEFT JOIN Role R ON U.Role = R.Id " +
-                $"WHERE Login = '{LoginTXT.Text}' AND Password = '{PasswordTXT.Text}'";
-            using (MySqlConnection c = new MySqlConnection(conn))
+            try
             {
-                c.Open();
-                using (MySqlCommand cmd = new MySqlCommand(sql, c))
+                string conn = "Server=localhost;DataBase=Krossovki;Uid=root;Pwd=;";
+                string sql = $"SELECT U.FIO, R.Role " +
+                            $"FROM Users U " +
+                            $"LEFT JOIN Role R ON U.Role = R.Id " +
+                            $"WHERE Login = '{LoginTXT.Text}' AND Password = '{PasswordTXT.Text}'";
+                using (MySqlConnection c = new MySqlConnection(conn))
                 {
-                    var reader = cmd.ExecuteReader();
-                    if(reader.Read())
+                    c.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(sql, c))
                     {
-                        string FIO = reader["FIO"].ToString();
-                        string Role = reader["Role"].ToString();
-                        new MainWindow(FIO, Role).Show();
-                        this.Close();
+                        var reader = cmd.ExecuteReader();
+                        if (reader.Read())
+                        {
+                            string FIO = reader["FIO"].ToString();
+                            string Role = reader["Role"].ToString();
+                            new MainWindow(FIO, Role).Show();
+                            this.Close();
+                        }
+                        else
+                        {
+                            lblError.Content = "Неправильно логин или пароль";
+                        }
                     }
                 }
+            }
+            catch
+            {
+                MessageBox.Show("Ошибка подключения к БД!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

@@ -1,17 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace NewExam
 {
@@ -21,31 +9,37 @@ namespace NewExam
     public partial class OrdersWindow : Window
     {
         DataHelper db = new DataHelper();
-
         public OrdersWindow()
         {
+
             InitializeComponent();
-            LoadOrders();
+            try
+            {
+                DataTable dt = db.GetZakaz();
+                LoadData(dt);
+            }
+            catch
+            {
+                MessageBox.Show("Ошибка подключения к БД!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
-        private void LoadOrders()
+        private void LoadData(DataTable dt)
         {
             OrdersPanel.Children.Clear();
-            DataTable dt = db.GetZakaz();
-
             foreach (DataRow dr in dt.Rows)
             {
                 var card = new OrderCard();
                 card.SetData(new
                 {
-                    Id = dr["Id"],
-                    Status = dr["Status"],
-                    DateZakaza = dr["DateZakaza"],
-                    DateDostavki = dr["DateDostavki"],
-                    Home = dr["Home"],
-                    Street = dr["Street"],
-                    City = dr["City"]
 
+                    Id = dr["Id"],
+                    DateDostavki = dr["DateDostavki"],
+                    DateZakaza = dr["DateZakaza"],
+                    Street = dr["Street"],
+                    Status = dr["Status"],
+                    Home = dr["Home"],
+                    City = dr["City"]
                 });
                 OrdersPanel.Children.Add(card);
             }
@@ -54,6 +48,26 @@ namespace NewExam
         private void BackClick(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        internal void DeleteOrder(int ordId)
+        {
+            try
+            {
+                int result = db.DeleteOrder(ordId);
+                if (result > 0)
+                {
+                    MessageBox.Show("Удачное удаление", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                    DataTable dt = db.GetZakaz();
+                    LoadData(dt);
+                }
+                else
+                    MessageBox.Show("Ошибка УДАЛЕНИЯ", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch
+            {
+                MessageBox.Show("Ошибка подключения к БД!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

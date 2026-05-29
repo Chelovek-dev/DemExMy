@@ -15,5 +15,9 @@
             <Label Name="DateZakaza" />
         </StackPanel>
         <Label Name="DateDostavki" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="50"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10">
+            <Button Click="DeleteCLICK" Content="Удалить" Margin="10"/>
+            <Button Click="EditCLICK" Content="Редактировать" Margin="10"/>
+        </StackPanel>
     </Grid>
 </UserControl>
